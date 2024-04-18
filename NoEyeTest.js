@@ -1,10 +1,9 @@
 /**
- * @fileoverview
- * NoEyeTest: BBGM Prog Script | v.3.1.0
- * This script is used to calculate the 'Prog Range' (PR) for a player.
- * A prog range is how low, or high high a player can progress in the off-season.
+ * NoEyeTest: BBGM Prog Script | v.3.1.1
+ * This script is used to calculate the 'Prog Range' (PR) for a player, and adjust their progs accordingly.
+ * A prog range is how low or high a player can progress in the off-season.
  * The prog range is calculated by taking the player's PER from the previous season
- * Currently, this is designed for players 25+
+ * Currently, this is designed for players 26+
  * Please see the README on how to use this
  *
  * Credits to TheProgMaestro for the original code this stemmed from, which I have now modified to create my own distirbution of it.
@@ -12,9 +11,6 @@
 
 /**
  * Creates a notification into the game's log.
- * @function sendProgNotification
- * @param {number} pid - Player ID
- * @param {string} notiMsg - Notification Message
  */
 async function sendProgNotification(data) {
 	let { player, progRange, ageRange, per, godProg, ovr } = data || null;
@@ -23,7 +19,7 @@ async function sendProgNotification(data) {
 	if (!player) {
 		return;
 	}
-	const { pid, firstName, lastName, born, tid } = player;
+	const { pid, firstName, lastName, tid } = player;
 	if (!pid) {
 		return;
 	}
@@ -56,9 +52,9 @@ function randomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-function getProgRange(per, progOptions, restrictions) {
-	let min = 0;
-	let max = 0;
+function getProgRange(per, progOptions) {
+	let min;
+	let max;
 	const { min1, min2, max1, max2, hardMin, hardMax, ovr, age } =
 		progOptions || {};
 
@@ -82,7 +78,6 @@ function getProgRange(per, progOptions, restrictions) {
 	const flagLower = min + ovr;
 	// Catch progs that would take them over 80
 	if (ovrProgression >= 80) {
-		let eq;
 		if (ovr >= 80) {
 			max = 0;
 			if (age > 30 && age < 35) {
@@ -101,22 +96,18 @@ function getProgRange(per, progOptions, restrictions) {
 				min = 0;
 			}
 		} else {
-			const diff = 80 - ovr;
-			// # Make the progRanges are whatever number it takes to get them to 80 based on their ovr
-			max = diff;
+			// # Make the progRanges be whatever number it takes to get them to 80 based on their ovr
+			max = 80 - ovr;
 			if (flagLower >= 80) {
 				min = 0;
 			}
 		}
 	}
 
-	const progRange = [min, max];
-	return progRange;
+	return [min, max];
 }
 
 let godProgCount = 0;
-let god;
-
 function getAgeRange(age) {
 	if (age >= 25 && age <= 30) {
 		return '25-30';
@@ -136,8 +127,7 @@ async function compileProgs() {
 		const ageFlags = {};
 		ageFlags.thirty = false;
 		ageFlags.twentyFive = false;
-		const name = `${p.firstName} ${p.lastName}`;
-		if (p.note === 'balanced' && p.draft.year !== seasonYr) {
+		if (p.watch === 1 && p.draft.year !== seasonYr) {
 			const name = `${p.firstName} ${p.lastName}`;
 			let per = 0;
 			let ovr = 0;
@@ -177,7 +167,6 @@ async function compileProgs() {
 			let ageRange;
 			ageRange = getAgeRange(age);
 			// ? Declare variable to be used later
-			let progRange = [0, 0];
 			if (p.ratings.length > 1) {
 				p.ratings.pop();
 				bbgm.player.addRatingsRow(p);
@@ -214,20 +203,8 @@ async function compileProgs() {
 
 				let progRange = [0, 0];
 				async function progs(data) {
-					const { age, per, ovr, name } = data;
-					if (ageRange === '25-30') {
-						const { min1, min2, max1, max2, hardMax } =
-							minMaxes[ageRange];
-						progRange = getProgRange(per, {
-							min1,
-							min2,
-							max1,
-							max2,
-							hardMax,
-							ovr,
-							age,
-						});
-					} else if (ageRange === '31-34') {
+					const { age, per, ovr } = data;
+					if (ageRange === '25-30' || ageRange === '31-34') {
 						const { min1, min2, max1, max2, hardMax } =
 							minMaxes[ageRange];
 						progRange = getProgRange(per, {
@@ -240,7 +217,6 @@ async function compileProgs() {
 							age,
 						});
 					} else if (ageRange === '35+') {
-						const { min1, min2, hardMax } = minMaxes[ageRange];
 						progRange = getProgRange(per, {
 							min1: 6,
 							min2: 9,
@@ -380,11 +356,6 @@ async function compileProgs() {
 		}
 	}
 }
-
-function randomNum(a, b) {
-	return Math.floor(Math.random() * b) + a;
-}
-
 const logGodProgs = async () => {
 	await bbgm.logEvent({
 		type: `God Progs`,
