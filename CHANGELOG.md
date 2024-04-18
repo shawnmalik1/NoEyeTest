@@ -1,3 +1,13 @@
+## [3.1.1] - 2023-04-18
+
+## Fixed
+
+- Set flag operations to be performed via `watch` prop
+
+## Changed
+- Readme legibility
+
+
 ## [3.0.2] - 2023-06-06
 
 ### Fixed
