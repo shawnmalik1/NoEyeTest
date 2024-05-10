@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,node
 
+# Local Test Envio
+test1.js
+test2.js
+
 ### Node ###
 # Logs
 logs
@@ -191,6 +195,9 @@ $RECYCLE.BIN/
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
-package-lock.json
-package.json
 .eslintrc.js
+.vscode/settings.json
+test3.js
+
+idea/**/*
+.idea/
