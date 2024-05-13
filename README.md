@@ -2,7 +2,7 @@
 **NoEyeTest** is a script designed for the browser-game: [BBGM](http://www.basketball-gm.com); The intention of the script is to create a realistic progression system by using simple formulas based on player's PER stat for the last season
 
 ## Preliminary Information
-[**NoEyeTest**](NoEyeTest.js), or **NET** for short, identifies players who will have their progs affected by detecting the `watch` property on the player. This is also visually seen as a flag within BBGM.
+[**NoEyeTest**](src/NoEyeTest.js), or **NET** for short, identifies players who will have their progs affected by detecting the `watch` property on the player. This is also visually seen as a flag within BBGM.
 
 For a visual, here's an example of a player who is flagged
 
@@ -12,13 +12,13 @@ And a player who isn't
 
 ![A player who is not flagged](https://i.imgur.com/7CvLHUp.png)
 
-- [**Worker Console**](WorkerConsole.js) is intended to be used **before** you run progs each season.
+- [**Worker Console**](src/WorkerConsole.js) is intended to be used **before** you run progs each season.
 - The target age of players to be affected by NET is 26 and above.
- - When using [**Worker Console**](WorkerConsole.js), it will by default flag players 25 and above. This is because **NET is executed after normal BBGM progs**.
+ - When using [**Worker Console**](src/WorkerConsole.js), it will by default flag players 25 and above. This is because **NET is executed after normal BBGM progs**.
 
 ## Instructions 📓
-1. Before progs, run [**Worker Console**](WorkerConsole.js) in the _Danger Zone_
-2. After progs (aka, in the `Preseason` phase), run [**NET**](NoEyeTest.js) in the _Danger Zone_
+1. Before progs, run [**Worker Console**](src/WorkerConsole.js) in the _Danger Zone_
+2. After progs (aka, in the `Preseason` phase), run [**NET**](src/NoEyeTest.js) in the _Danger Zone_
 3. Progs for 26+ players should be modified, check the *News Feed* section for information
 
 **_News Feed Post-NET:_**
